@@ -40,7 +40,17 @@ const VRCorePage = () => {
     return (
         <div className='relative top-0 left-0 w-full h-screen bg-black'>
             <div className='absolute top-0 left-0 right-0 h-full w-full z-[999] pointer-events-none'>
-
+                {/* Bottom nav */}
+                <div className='absolute bottom-0 left-0 right-0 h-[60px] bg-black flex items-center justify-between px-4 z-[999] pointer-events-auto '>
+                    <Button>
+                        <FaHome className='text-white' size={20} />
+                        Trang chủ
+                    </Button>
+                    <Button>
+                        <FaHome className='text-white' size={20} />
+                        Trang chủ
+                    </Button>
+                </div>
             </div>
             <div className='h-full w-full absolute top-0 left-0 z-[0]'>
                 <iframe
