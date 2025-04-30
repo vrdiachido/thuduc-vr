@@ -1,0 +1,39 @@
+<html>
+  <script>
+    let counter = 0;
+
+    // Function to send data to parent
+    function sendDataToParent() {
+      counter++;
+      window.parent.postMessage(
+        {
+          type: "VR_UPDATE",
+          payload: {
+            counter: counter,
+            timestamp: Date.now(),
+            vrState: "active",
+          },
+        },
+        "*"
+      );
+    }
+
+    // Send initial message
+    sendDataToParent();
+
+    // Set up interval to send messages every 2 seconds
+    setInterval(sendDataToParent, 2000);
+
+    // Listen for messages from parent
+    window.addEventListener("message", function (event) {
+      // Log received message
+      console.log("VR iframe received message:", event.data);
+
+      // Handle specific message types
+      if (event.data.type === "ui_action") {
+        console.log("UI action received:", event.data.action);
+        // Implement your action handling logic here
+      }
+    });
+  </script>
+</html>
