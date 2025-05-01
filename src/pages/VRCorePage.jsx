@@ -1,57 +1,83 @@
-import { Button, TextInput } from '@mantine/core'
+import { LuMapPinCheck } from "react-icons/lu";
+
+import MAP from '../constants/MAP'
+
 import React, { useState, useEffect, useRef } from 'react'
-import { FaHome, FaMap, FaCog, FaInfoCircle, FaSearch } from 'react-icons/fa'
+import { FaHome, FaMap, FaCog, FaInfoCircle, FaSearch, FaMicroblog, FaImage, FaMarker, FaMapMarkedAlt } from 'react-icons/fa'
+
+import use3DVistaHook from "../hooks/use3DVistaHook";
 
 const VRCorePage = () => {
     const vrFrameRef = useRef(null);
-    // useEffect(() => {
-    //     const handleMessage = (event) => {
-    //         // Validate message source for security
-    //         if (vrFrameRef.current && event.source !== vrFrameRef.current.contentWindow) return;
+    const {
+        showMedia,
+        sendMessage,
+        onMessage: registerMessageHandler,
+    } = use3DVistaHook({
+        ref: vrFrameRef,
+    });
 
-    //         console.log('Received message from iframe:', event.data);
+    useEffect(() => {
+        registerMessageHandler('hotspotClicked', (payload) => {
+            alert('Received message from template: ' + payload);
+        }
+        );
+    }, []);
+    const [showNavbar, setShowNavbar] = useState(false);
+    const navButtons = [
+        {
+            id: 'home', label: 'Trang chủ', icon: FaHome, onClick: () => {
+                showMedia(MAP.root.name);
+            }
+        },
+        { id: 'info', label: 'Thông tin', icon: FaInfoCircle },
+        { id: 'map', label: 'Bản đồ', icon: FaMap },
+        { id: 'settings', label: 'Cài đặt', icon: FaCog },
+    ];
 
-    //         // Handle specific message type
-    //         if (event.data.type === 'VR_UPDATE') {
-    //             setVrData(event.data.payload);
-    //             console.log('VR data updated:', event.data.payload);
-    //         }
-    //     };
-
-    //     window.addEventListener('message', handleMessage);
-
-    //     // Set up interval to send heartbeat to iframe
-    //     // const intervalId = setInterval(() => {
-    //     //     if (vrFrameRef.current && vrFrameRef.current.contentWindow) {
-    //     //         vrFrameRef.current.contentWindow.postMessage({
-    //     //             type: 'PARENT_HEARTBEAT',
-    //     //             timestamp: Date.now()
-    //     //         }, '*');
-    //     //     }
-    //     // }, 5000);
-
-    //     // Clean up event listener and interval when component unmounts
-    //     return () => {
-    //         window.removeEventListener('message', handleMessage);
-    //         clearInterval(intervalId);
-    //     };
-    // }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNavbar(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     return (
-        <div className='relative top-0 left-0 w-full h-screen bg-black'>
-            <div className='absolute top-0 left-0 right-0 h-full w-full z-[999] pointer-events-none'>
-                {/* Bottom nav */}
-                <div className='absolute bottom-0 left-0 right-0 h-[60px] bg-black flex items-center justify-between px-4 z-[999] pointer-events-auto '>
-                    <Button>
-                        <FaHome className='text-white' size={20} />
-                        Trang chủ
-                    </Button>
-                    <Button>
-                        <FaHome className='text-white' size={20} />
-                        Trang chủ
-                    </Button>
+        <div className='relative top-0 left-0 w-full h-screen '>
+            <div className={`absolute  transition-all duration-500 ${showNavbar ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'} top-0 left-0 right-0 h-full w-full flex z-[999] pointer-events-none`}>
+                <div className={`absolute bottom-0 left-0 right-0 mx-auto mb-4 max-w-md pointer-events-auto`}>
+                    <div className='bg-white/90 backdrop-blur-md rounded-2xl mx-4 p-3 border border-gray-50 shadow-xl'>
+                        <div className='flex items-center justify-between gap-2'>
+                            {navButtons.map((button) => (
+                                <button
+                                    key={button.id}
+                                    onClick={() => {
+                                        button.onClick()
+                                    }}
+                                    className={`flex flex-col items-center justify-center flex-1 py-3 px-2 rounded-xl transition-all duration-300 cursor-pointer bg-gray-50 text-gray-700 bg-gray-50 hover:bg-blue-500 hover:text-white shadow-md ${showNavbar ? 'opacity-100' : 'opacity-0'}`}
+                                >
+                                    <button.icon className="text-lg mb-1" />
+                                    <span className="text-xs font-medium">{button.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className=' absolute top-0 right-0 mt-4 mr-4 flex gap-2 pointer-events-auto'>
+                    <div className='flex items-center justify-center px-4 py-2 gap-2 rounded-full bg-gray-50 hover:bg-blue-500 hover:text-white  transition-all duration-300 shadow-md cursor-pointer'>
+                        <FaSearch className="text-lg" />
+                        <span className="">Tìm kiếm</span>
+                    </div>
+                    <div className='flex items-center justify-center px-4 py-2 gap-2 rounded-full bg-gray-50 hover:bg-blue-500 hover:text-white   transition-all duration-300 shadow-md cursor-pointer'>
+                        <LuMapPinCheck className="text-lg" />
+                        <span className="">Checkin</span>
+                    </div>
+                </div>
+                <div className='absolute bottom-0 right-0 mb-4 mr-4 flex flex-col gap-2 pointer-events-auto'>
                 </div>
             </div>
+
+
             <div className='h-full w-full absolute top-0 left-0 z-[0]'>
                 <iframe
                     ref={vrFrameRef}
@@ -60,7 +86,6 @@ const VRCorePage = () => {
                     src="/vr_core/index.htm">
                 </iframe>
             </div>
-
         </div>
     )
 }

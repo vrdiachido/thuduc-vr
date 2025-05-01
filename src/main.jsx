@@ -1,11 +1,12 @@
 import '@mantine/core/styles.css';
 import VRCorePage from './pages/VRCorePage.jsx';
 import { BrowserRouter, Routes, Route } from "react-router";
+import { MantineProvider, createTheme } from '@mantine/core';
 
-import { MantineProvider } from '@mantine/core';
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import MainLayout from './layouts/MainLayout.jsx';
+
 
 createRoot(document.getElementById('root')).render(
   <MantineProvider>
