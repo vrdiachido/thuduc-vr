@@ -44,7 +44,7 @@ const use3DVistaHook = ({
 
     useEffect(() => {
         const messageHandler = (event) => {
-            alert('Received message from parent: ' + JSON.stringify(event.data));
+            // alert('Received message from parent: ' + JSON.stringify(event.data));
             if (event.source !== parentWindow) return;
             const { type, payload } = event.data;
             const callbacks = eventHandlers.current[type];
