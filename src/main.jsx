@@ -1,15 +1,14 @@
 import '@mantine/core/styles.css';
-import VRCorePage from './pages/VRCorePage.jsx';
+import VRCorePage from './pages/VRCorePage';
 import { BrowserRouter, Routes, Route } from "react-router";
 import { MantineProvider, createTheme } from '@mantine/core';
-import ProtectedLayout from './layouts/ProtectedLayout.jsx';
-
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import MainLayout from './layouts/MainLayout.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import CreateHotSpotPage from './pages/CreateHotSpotPage.jsx';
-import LatLonPickerPage from './pages/LatLonPickerPage.jsx';
+import ProtectedLayout from './layouts/ProtectedLayout';
+import MainLayout from './layouts/MainLayout';
+import LoginPage from './pages/LoginPage';
+import CreateHotSpotPage from './pages/CreateHotSpotPage';
+import LatLonPickerPage from './pages/LatLonPickerPage';
 
 
 createRoot(document.getElementById('root')).render(

@@ -1,4 +1,4 @@
-// filepath: d:\MY_PROJECTS\VR_WEB\frontend\src\components\ImageUploader.jsx
+// filepath: d:\MY_PROJECTS\VR_WEB\frontend\src\components\ImageUploader
 import { useState, useRef, useEffect } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
