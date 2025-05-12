@@ -45,3 +45,25 @@ export const getHotspotById = async (id: string) => {
   }
   return data;
 };
+
+export const createHotspot = async (hotspotData) => {
+  const { data, error } = await supabase
+    .from("hotspots")
+    .insert([
+      {
+        title: hotspotData.title,
+        description: hotspotData.description,
+        image_url: hotspotData.imageUrl,
+        latitude: hotspotData.latitude || null,
+        longitude: hotspotData.longitude || null,
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

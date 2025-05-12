@@ -2,6 +2,8 @@ import { create } from "zustand";
 import {
   getAllHotspots,
   searchHotspotsByTitle,
+  getHotspotById,
+  createHotspot,
 } from "../services/hotspots.service";
 
 const useHotspotStore = create((set, get) => ({
@@ -89,6 +91,29 @@ const useHotspotStore = create((set, get) => ({
     set((state) => ({
       currentHotspot: state.hotspots.find((hotspot) => hotspot.id === id),
     }));
+  },
+
+  // Add a new hotspot
+  addHotspot: async (hotspotData) => {
+    try {
+      set({ loading: true, error: null });
+      const newHotspot = await createHotspot(hotspotData);
+
+      // Update the state with the new hotspot
+      set((state) => ({
+        allHotspots: [...state.allHotspots, newHotspot],
+        hotspots: [...state.hotspots, newHotspot],
+        loading: false,
+      }));
+
+      return newHotspot;
+    } catch (error) {
+      set({
+        error: error?.message || "Error creating hotspot",
+        loading: false,
+      });
+      throw error;
+    }
   },
 }));
 

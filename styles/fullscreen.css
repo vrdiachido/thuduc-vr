@@ -1,0 +1,23 @@
+.fullscreen {
+  width: 100%;
+  height: 100vh; /* Use viewport height */
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevents scrollbars */
+  position: relative;
+}
+
+/* Make sure the html and body elements also take up full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .fullscreen {
+    /* Mobile specific adjustments if needed */
+  }
+}

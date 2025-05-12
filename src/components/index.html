@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Guides Web</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .search-box {
+            position: absolute;
+            top: 30px;
+            left: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .color-white {
+            color: white;
+            /* width: 70px; */
+            /* height: 35px; */
+        }
+
+        .search-box-input {
+            width: 350px;
+            min-height: 35px;
+            border-left: none;
+            padding: 1px 8px;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+            outline: none;
+            border-radius: 2px 0 0 2px;
+            border: 1px solid transparent;
+        }
+
+        .search-box-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 39px;
+            background-color: #fdffff;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, .1);
+            /* border-radius: 0 2px 2px 0; */
+            cursor: pointer;
+            /* border-left: 1px solid #cccece; */
+        }
+
+        .clear-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 39px;
+            background-color: #fdffff;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, .1);
+
+            cursor: pointer;
+            /* border-left: 1px solid #cccece; */
+        }
+
+        .direction-box-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 39px;
+            background-color: #fdffff;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, .1);
+            border-radius: 0 2px 2px 0;
+            cursor: pointer;
+            border-left: 1px solid #cccece;
+        }
+
+        .search-result {
+            position: absolute;
+            top: 44px;
+            width: 432px;
+            background-color: white;
+            box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+            z-index: 2;
+            border-radius: 2px;
+            padding: 8px;
+            display: none;
+        }
+
+        .result-box {
+            width: 100%;
+            cursor: pointer;
+            margin: 0 0 8px 0;
+        }
+
+        .result-box:hover {
+            background-color: rgb(221, 221, 221);
+        }
+
+        .display-none {
+            display: none;
+        }
+
+        .input-direction-container {
+            /* margin: 30px 0; */
+            position: absolute;
+            display: none;
+            left: 60px;
+            top: 30px
+        }
+
+        .close-directions {
+            margin-left: 10px;
+        }
+
+        .direction {
+            width: 100px;
+            height: 40px;
+        }
+
+        .search-box-direction {
+            width: 350px;
+            height: 35px;
+            border-left: none;
+            padding: 1px 8px;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
+            outline: none;
+            border-radius: 2px 0 0 2px;
+            border: 1px solid transparent;
+        }
+
+        #start,
+        #end {
+            width: 300px;
+            /* padding: 15px; */
+            margin-right: 10px;
+            /* margin-left: 10px; */
+        }
+
+        #get-directions {
+            padding: 5px 10px;
+        }
+
+        #coordinates {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            margin: 0;
+            font-size: 11px;
+            line-height: 18px;
+            border-radius: 3px;
+            display: none;
+        }
+
+        .popover-button {
+            position: absolute;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            display: inline-block;
+            background-color: #f9f9f9;
+            left: 60px;
+            top: 80px;
+            width: 95px
+        }
+
+        .popover {
+            left: 60px;
+            top: 125px;
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1000;
+        }
+
+        .popover .map-style-option {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .popover .map-style-option:last-child {
+            border-bottom: none;
+        }
+
+        .popover .map-style-option:hover {
+            background-color: #f1f1f1;
+        }
+
+        .search-result-start {
+            position: absolute;
+            top: 44px;
+            width: 432px;
+            background-color: white;
+            box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+            z-index: 2;
+            border-radius: 2px;
+            padding: 8px;
+            display: none;
+        }
+
+        .search-result-end {
+            position: absolute;
+            top: 44px;
+            width: 432px;
+            background-color: white;
+            box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+            z-index: 2;
+            border-radius: 2px;
+            padding: 8px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <div class="search-box" id="search-container">
+        <input class="search-box-input" id="input" autofocus placeholder="Tìm kiếm địa điểm"></input>
+        <div class="search-box-btn">
+            <div class="color-white">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 50 50">
+                    <path
+                        d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z">
+                    </path>
+                </svg>
+            </div>
+        </div>
+
+        <div class="direction-box-btn" id="show-get-directions">
+            <div class="color-white">
+                <svg fill="#000000" height="24px" width="24px" version="1.1" id="Capa_1"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 470.746 470.746" xml:space="preserve">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <g>
+                            <path
+                                d="M349.636,293.382c2.861,1.883,6.732,1.612,9.26-0.725c2.285-2.112,3.02-5.504,1.83-8.375 c-1.143-2.757-3.87-4.593-6.854-4.632c-3.194-0.041-6.122,2.052-7.156,5.063C345.63,287.875,346.831,291.536,349.636,293.382z">
+                            </path>
+                            <path
+                                d="M437.373,346.725h-24.977c-2.353-18.676-13.493-36.313-32.584-51.395c-3.251-2.569-7.968-2.015-10.534,1.235 c-2.568,3.25-2.015,7.966,1.235,10.534c10.958,8.657,23.759,22.185,26.722,39.625h-31.382c-4.143,0-7.5,3.358-7.5,7.5 s3.357,7.5,7.5,7.5h31.375c-3.264,19.254-19.036,37.41-45.25,51.769c-29.26,16.028-67.762,25.259-109.105,26.257v-26.236 c0-4.142-3.357-7.5-7.5-7.5s-7.5,3.358-7.5,7.5v26.236c-41.343-0.998-79.846-10.23-109.105-26.257 c-26.214-14.359-41.986-32.514-45.25-51.769h31.375c4.143,0,7.5-3.358,7.5-7.5s-3.357-7.5-7.5-7.5H73.509 c3.297-19.662,19.02-34.518,32.458-43.875c20.259-14.108,48.277-24.647,79.586-30.063v60.277c0,15.804,12.857,28.661,28.661,28.661 c8.372,0,15.916-3.609,21.16-9.352c5.245,5.743,12.789,9.352,21.161,9.352c15.804,0,28.66-12.857,28.66-28.661V272.79 c15.63,2.688,30.392,6.62,43.966,11.75c0.873,0.33,1.769,0.486,2.65,0.486c3.029,0,5.882-1.849,7.017-4.851 c1.465-3.875-0.489-8.203-4.364-9.667c-15.205-5.746-31.755-10.082-49.269-12.933v-6.905h4.706 c13.947,0,25.294-11.347,25.294-25.294v-75.363c0-27.429-19.033-50.483-44.582-56.683c11.087-9.781,18.101-24.079,18.101-39.992 C288.714,23.928,264.786,0,235.374,0c-29.411,0-53.339,23.928-53.339,53.339c0,15.913,7.013,30.211,18.1,39.992 c-25.55,6.2-44.583,29.255-44.583,56.683v75.363c0,13.947,11.347,25.294,25.294,25.294h4.706v6.893 c-34.468,5.644-65.578,17.251-88.158,32.976c-22.743,15.837-36.357,35.553-39.027,56.185H33.373c-4.143,0-7.5,3.358-7.5,7.5 s3.357,7.5,7.5,7.5h24.973c3.121,24.852,21.736,47.681,53.214,64.924c31.409,17.205,72.469,27.09,116.313,28.104v8.493 c0,4.142,3.357,7.5,7.5,7.5s7.5-3.358,7.5-7.5v-8.493c43.844-1.014,84.902-10.899,116.312-28.104 c31.479-17.243,50.094-40.072,53.215-64.924h24.973c4.143,0,7.5-3.358,7.5-7.5S441.516,346.725,437.373,346.725z M197.035,53.339 c0-21.14,17.199-38.339,38.339-38.339c21.141,0,38.34,17.199,38.34,38.339s-17.199,38.339-38.34,38.339 C214.234,91.679,197.035,74.48,197.035,53.339z M170.553,225.377v-75.363c0-23.896,19.44-43.336,43.336-43.336h42.971 c23.896,0,43.336,19.44,43.336,43.336v75.363c0,5.676-4.618,10.294-10.294,10.294h-4.706v-83.156c0-4.142-3.357-7.5-7.5-7.5 s-7.5,3.358-7.5,7.5v90.656v89.893c0,7.533-6.128,13.661-13.66,13.661c-7.533,0-13.661-6.128-13.661-13.661v-89.893 c0-4.142-3.357-7.5-7.5-7.5s-7.5,3.358-7.5,7.5v89.893c0,7.533-6.128,13.661-13.66,13.661c-7.533,0-13.661-6.128-13.661-13.661 V152.515c0-4.142-3.357-7.5-7.5-7.5s-7.5,3.358-7.5,7.5v83.156h-4.706C175.171,235.671,170.553,231.054,170.553,225.377z">
+                            </path>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <div id="result" class="search-result"></div>
+    </div>
+
+    <div class="input-direction-container" id="get-directions-box">
+        <input type="text" id="start" class="search-box-direction" placeholder="Điểm đầu ">
+        <div id="result-start" class="search-result-start"></div>
+        <input type="text" id="end" class="search-box-direction" placeholder="Điểm cuối ">
+        <div id="result-end" class="search-result-end"></div>
+        <button id="get-directions" class="direction">Dẫn đường</button>
+        <div id="close-directions" class="close-directions">
+            <svg height="40px" width="40px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-2.6 -2.6 31.20 31.20" xml:space="preserve"
+                fill="#a1a1a1" stroke="#a1a1a1">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                    stroke-width="0.052000000000000005"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <g>
+                        <path style="fill:#030104;"
+                            d="M21.125,0H4.875C2.182,0,0,2.182,0,4.875v16.25C0,23.818,2.182,26,4.875,26h16.25 C23.818,26,26,23.818,26,21.125V4.875C26,2.182,23.818,0,21.125,0z M18.78,17.394l-1.388,1.387c-0.254,0.255-0.67,0.255-0.924,0 L13,15.313L9.533,18.78c-0.255,0.255-0.67,0.255-0.925-0.002L7.22,17.394c-0.253-0.256-0.253-0.669,0-0.926l3.468-3.467 L7.221,9.534c-0.254-0.256-0.254-0.672,0-0.925l1.388-1.388c0.255-0.257,0.671-0.257,0.925,0L13,10.689l3.468-3.468 c0.255-0.257,0.671-0.257,0.924,0l1.388,1.386c0.254,0.255,0.254,0.671,0.001,0.927l-3.468,3.467l3.468,3.467 C19.033,16.725,19.033,17.138,18.78,17.394z">
+                        </path>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <button class="popover-button" id="choose-map-style" onclick="togglePopover()">Map Style</button>
+    <div class="popover" id="popover"></div>
+    <!-- <pre id="coordinates"></pre> -->
+    <script>
+        const apiUrl = 'https://rsapi.goong.io';
+        const mapUrl = 'https://tiles.goong.io/assets/';
+        const apiKey = '7bWT40gj8VTkZ1INXSPPQk3CJG5tLg9jIgMayy3f'; // you need an account to get key from: https://account.goong.io/keys
+        const mapKey = 'hkBRTOlzhKDE79Z6WGwQCgI9MTgsGXyUNC7jS8i3'; // you need an account to get key from: https://account.goong.io/keys
+        const accessMapboxToken = 'your_mapbox_token'; // Goong provide access token for you
+        const directionVehicle = 'car' // bike, taxi, trunk, hd
+        const center = [105.85242472181584, 21.029579719995272];
+        const zoom = 14;
+        const radiusInMeters = 500; // Radius in meters
+        const mapStyles = [
+            { name: 'Normal', url: `${mapUrl}goong_map_web.json?api_key=${mapKey}` },
+            { name: 'Satellite', url: `${mapUrl}goong_satellite.json?api_key=${mapKey}` },
+            { name: 'Dark', url: `${mapUrl}goong_map_dark.json?api_key=${mapKey}` },
+            { name: 'Light', url: `${mapUrl}navigation_day.json?api_key=${mapKey}` },
+            { name: 'Night', url: `${mapUrl}navigation_night.json?api_key=${mapKey}` }
+        ];
+        
+        mapboxgl.accessToken = accessMapboxToken;
+        const map = new mapboxgl.Map({
+            container: 'map',
+            // change style of map by change the link below of Goong map style, there are 5 styles.
+            style: `${mapUrl}goong_map_web.json?api_key=${mapKey}`,
+            
+            zoom: zoom,
+            center: center
+        });
+        map.addControl(new mapboxgl.NavigationControl());
+        map.scrollZoom.disable();
+
+        function drawCircle(center, radiusInMeters) {
+            const points = 74;
+            const coords = {
+                latitude: center[1],
+                longitude: center[0]
+            };
+            const km = radiusInMeters / 1000;
+            const ret = [];
+            const distanceX = km / (111.320 * Math.cos(coords.latitude * Math.PI / 180));
+            const distanceY = km / 110.574;
+            let theta, x, y;
+            for (let i = 0; i < points; i++) {
+                theta = (i / points) * (2 * Math.PI);
+                x = distanceX * Math.cos(theta);
+                y = distanceY * Math.sin(theta);
+                ret.push([coords.longitude + x, coords.latitude + y]);
+            }
+            ret.push(ret[0]);
+            return ret;
+        }
+
+        map.on('load', () => {
+            // map.setFog({}); // Set the default atmosphere style
+            const circleData = {
+                'type': 'FeatureCollection',
+                'features': [{
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [drawCircle(center, radiusInMeters)]
+                    }
+                }]
+            };
+            map.addSource('circle', {
+                'type': 'geojson',
+                'data': circleData
+            });
+            new mapboxgl.Marker()
+                .setLngLat(center)
+                .addTo(map);
+            map.addLayer({
+                id: 'circle',
+                type: 'fill',
+                source: 'circle',
+                layout: {},
+                paint: {
+                    'fill-color': '#588888',
+                    'fill-opacity': 0.5
+                }
+            });
+        });
+
+        // change style map
+        function changeStyle(styleUrl, name) {
+            map.setStyle(styleUrl);
+            document.querySelector('.popover-button').textContent = name;
+            togglePopover(); // Close the popover after selecting a style
+        }
+
+        function togglePopover() {
+            const popover = document.getElementById('popover');
+            popover.style.display = (popover.style.display === 'block') ? 'none' : 'block';
+        }
+        document.getElementById('choose-map-style').addEventListener('click', function (event) {
+            const popover = document.getElementById('popover');
+            popover.style.display = (popover.style.display === 'block') ? 'none' : 'block';
+        });
+        function renderMapStyleOptions() {
+            const popover = document.getElementById('popover');
+            mapStyles.forEach(style => {
+                const div = document.createElement('div');
+                div.className = 'map-style-option';
+                div.textContent = style.name;
+                div.onclick = () => changeStyle(style.url, style.name);
+                popover.appendChild(div);
+            });
+        }
+        // Initial render of map style options
+        renderMapStyleOptions();
+
+        map.on('mousedown', function (e) {
+            longPressTimeout = setTimeout(function () {
+                isLongPress = true;
+                var coordinates = e.lngLat;
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML('Coordinates: ' + coordinates.lat + ', ' + coordinates.lng)
+                    .addTo(map);
+
+                document.getElementById('coordinates').style.display = 'block';
+                document.getElementById('coordinates').innerHTML =
+                    'Longitude: ' + coordinates.lng + '<br />Latitude: ' + coordinates.lat;
+            }, 1000); // 1000 milliseconds = 1 second
+        });
+
+        map.on('mouseup', function () {
+            clearTimeout(longPressTimeout);
+            if (!isLongPress) {
+                document.getElementById('coordinates').style.display = 'none';
+            }
+            isLongPress = false;
+        });
+
+        map.on('mousemove', function () {
+            clearTimeout(longPressTimeout);
+        });
+
+        document.getElementById('input').addEventListener('input', function () {
+            const query = this.value;
+            if (query.length >= 2) { // Only fetch if the input has 2 or more characters
+                fetchDataAutoComplete(query);
+            } else {
+                renderArray([]); // Clear results if input is less than 2 characters
+            }
+        });
+
+        function fetchDataAutoComplete(query) {
+            const apiLink = `${apiUrl}/Place/AutoComplete?api_key=${apiKey}&input=${encodeURIComponent(query)}`;
+            fetch(apiLink)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.predictions) {
+                        renderArray(data.predictions.map(prediction => prediction));
+                    } else {
+                        renderArray([]);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    renderArray([]); // Render an empty array in case of error
+                });
+        }
+        function renderArray(data) {
+            const resultContainer = document.getElementById('result');
+            const inputContainer = document.getElementById('input');
+            resultContainer.innerHTML = ''; // Clear previous results
+            if (data.length > 0) {
+                resultContainer.style.display = 'block';
+            } else {
+                resultContainer.style.display = 'none';
+            }
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'result-box';
+                div.textContent = item.description;
+                div.addEventListener('click', function () {
+                    fetchPlaceDetails(item.place_id);
+                    resultContainer.style.display = 'none';
+                    inputContainer.value = item.description;
+                });
+                resultContainer.appendChild(div);
+            });
+        }
+        function fetchPlaceDetails(placeId) {
+            const apiLink = `${apiUrl}/Place/Detail?api_key=${apiKey}&place_id=${placeId}`;
+            fetch(apiLink)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result) {
+                        const { location } = data.result.geometry;
+                        const lngLat = [location.lng, location.lat];
+                        // addMarker(lngLat);
+                        addMarkerAndCircleAround(lngLat)
+                    } else {
+                        console.error('No result found for place details');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching place details:', error);
+                });
+        }
+        function removeLayer(layerId) {
+            if (map.getLayer(layerId)) {
+                map.removeLayer(layerId);
+            }
+        }
+        function addMarker(lngLat) {
+            new mapboxgl.Marker()
+                .setLngLat(lngLat)
+                .addTo(map);
+            // map.flyTo({ center: lngLat, zoom: zoom }); //not fly if it is marker in direction
+        }
+        function addMarkerAndCircleAround(lngLat) {
+            // Add marker
+            console.log(lngLat)
+            new mapboxgl.Marker()
+                .setLngLat(lngLat)
+                .addTo(map);
+            // Draw circle
+            if (map.getLayer('circle')) {
+                map.removeLayer('circle');
+                map.removeSource('circle');
+            }
+            const circleData = {
+                'type': 'FeatureCollection',
+                'features': [{
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [drawCircle(lngLat, radiusInMeters)]
+                    }
+                }]
+            };
+            map.addSource('circle', {
+                'type': 'geojson',
+                'data': circleData
+            });
+            map.addLayer({
+                'id': 'circle',
+                'type': 'fill',
+                'source': 'circle',
+                'layout': {},
+                'paint': {
+                    'fill-color': '#588888',
+                    'fill-opacity': 0.5
+                }
+            });
+            // fly to this location 
+            map.flyTo({ center: lngLat, zoom: zoom });
+        }
+
+        document.getElementById('show-get-directions').addEventListener('click', function () {
+            const showDirectionContainer = document.getElementById('get-directions-box');
+            const showSearchContainer = document.getElementById('search-container');
+            const inputSearchAutocomplete = document.getElementById('input');
+            showDirectionContainer.style.display = 'flex';
+            showSearchContainer.style.display = 'none';
+            inputSearchAutocomplete.value = null
+        });
+        document.getElementById('close-directions').addEventListener('click', function () {
+            const showDirectionContainer = document.getElementById('get-directions-box');
+            const showSearchContainer = document.getElementById('search-container');
+            const inputStartDirection = document.getElementById('start');
+            const inputEndDirection = document.getElementById('end');
+            showDirectionContainer.style.display = 'none';
+            showSearchContainer.style.display = 'flex';
+            inputStartDirection.value = null;
+            inputEndDirection.value = null;
+            removeLayer('route')
+
+        });
+        document.getElementById('get-directions').addEventListener('click', function () {
+            const startLocation = document.getElementById('start').value;
+            const endLocation = document.getElementById('end').value;
+
+            if (startLocation && endLocation) {
+                // Convert the locations to coordinates (latitude and longitude)
+                // getCoordinates(startLocation, function (startCoords) {
+                //     getCoordinates(endLocation, function (endCoords) {
+                //         // Fetch and display directions
+                //         fetchDirections(startCoords, endCoords);
+                //     });
+                // });
+                fetchDirections(startLocation, endLocation);
+            } else {
+                alert('Please enter both start and end locations.');
+            }
+        });
+        function isLatLong(input) {
+            const latLongRegex = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6},\s?-?((1[0-7][0-9]){1}\.{1}\d{1,6}|[1-9]?[0-9]\.{1}\d{1,6})$/;
+            return latLongRegex.test(input.trim());
+        }
+        function getCoordinates(location, callback) {
+            // Use the Goong API or another geocoding service to convert the location to coordinates
+            // var apiLink;
+            // if (isLatLong(input)) {
+            //     const [lat, lng] = input.split(',').map(Number);
+            //     console.log('Input is coordinates:', lat, lng);
+            //     // Add a marker at the given coordinates
+            //     addMarker([lng, lat]);
+            // } else {
+            //     console.log('Input is a location name:', input);
+            //     // Use the location name to fetch coordinates
+            //     getCoordinates(input, function (coords) {
+            //         // Add a marker at the fetched coordinates
+            //         addMarker(coords);
+            //     });
+            // }
+
+            const apiLink = `${apiUrl}/Geocode?address=${encodeURIComponent(location)}&api_key=${apiKey}`;
+            fetch(apiLink)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results && data.results.length > 0) {
+                        const coords = data.results[0].geometry.location;
+                        callback([coords.lng, coords.lat]);
+                    } else {
+                        alert('Could not find coordinates for the location: ' + location);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching coordinates:', error);
+                    alert('Error fetching coordinates for the location: ' + location);
+                });
+        }
+
+        function fetchDirections(startCoords, endCoords) {
+            const origin = `${startCoords[0]},${startCoords[1]}`;
+            const destination = `${endCoords[0]},${endCoords[1]}`;
+            const apiLink = `${apiUrl}/Direction?origin=${startCoords}&destination=${endCoords}&vehicle=${directionVehicle}&api_key=${apiKey}`;
+
+            fetch(apiLink)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.routes && data.routes.length > 0) {
+                        const route = data.routes[0].overview_polyline.points;
+                        const distance = data.routes[0].legs[0].distance.text;
+                        const time = data.routes[0].legs[0].duration.text;
+                        const decodedRoute = decodePolyline(route);
+                        displayRoute(decodedRoute, startCoords, endCoords, distance, time);
+                    } else {
+                        alert('Could not find a route.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching directions:', error);
+                    alert('Error fetching directions.');
+                });
+        }
+
+        function decodePolyline(encoded) {
+            var points = [];
+            var index = 0, len = encoded.length;
+            var lat = 0, lng = 0;
+
+            while (index < len) {
+                var b, shift = 0, result = 0;
+                do {
+                    b = encoded.charAt(index++).charCodeAt(0) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lat += dlat;
+
+                shift = 0;
+                result = 0;
+                do {
+                    b = encoded.charAt(index++).charCodeAt(0) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lng += dlng;
+
+                points.push([lng * 1e-5, lat * 1e-5]);
+            }
+
+            return points;
+        }
+
+        function displayRoute(route, startCoords, endCoords, distance, time) {
+            if (map.getSource('route')) {
+                map.removeLayer('route');
+                map.removeSource('route');
+            }
+            const start = startCoords.split(',').map(x => Number(x));
+            const end = endCoords.split(',').map(x => Number(x));
+            const longLatStart = [start[1], start[0]];
+            const longLatEnd = [end[1], end[0]];
+            //add marker to start and end location
+            addMarker(longLatStart)
+            addMarker(longLatEnd)
+            map.addSource('route', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': route
+                    }
+                }
+            });
+            map.addLayer({
+                'id': 'route',
+                'type': 'line',
+                'source': 'route',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#3887be',
+                    'line-width': 5,
+                    'line-opacity': 0.9
+                }
+            });
+            // Find the midpoint of the route to show popup
+            const midPoint = route[Math.floor(route.length / 2)];
+            // Add a marker for the midpoint with distance + time information
+            new mapboxgl.Popup()
+                .setLngLat(midPoint)
+                .setHTML(`<p>Khoảng cách: ${distance}</p> <p>Thời gian: ${time}</p> <br/>`)
+                .addTo(map);
+
+            map.fitBounds(route.reduce(function (bounds, coord) {
+                return bounds.extend(coord);
+            }, new mapboxgl.LngLatBounds(route[0], route[0])));
+        }
+
+
+        var longPressTimeout;
+        var isLongPress = false;
+        // The following values can be changed to control rotation speed:
+
+        // At low zooms, complete a revolution every two minutes.
+        const secondsPerRevolution = 240;
+        // Above zoom level 5, do not rotate.
+        const maxSpinZoom = 5;
+        // Rotate at intermediate speeds between zoom levels 3 and 5.
+        const slowSpinZoom = 3;
+
+        let userInteracting = true;
+        const spinEnabled = true;
+
+        function spinGlobe() {
+            const zoom = map.getZoom();
+            if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+                let distancePerSecond = 360 / secondsPerRevolution;
+                if (zoom > slowSpinZoom) {
+                    // Slow spinning at higher zooms
+                    const zoomDif =
+                        (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+                    distancePerSecond *= zoomDif;
+                }
+                const center = map.getCenter();
+                center.lng -= distancePerSecond;
+                // Smoothly animate the map over one second.
+                // When this animation is complete, it calls a 'moveend' event.
+                map.easeTo({ center, duration: 1000, easing: (n) => n });
+            }
+        }
+
+        // Pause spinning on interaction
+        map.on('mousedown', () => {
+            userInteracting = true;
+        });
+        map.on('dragstart', () => {
+            userInteracting = true;
+        });
+
+        // When animation is complete, start spinning if there is no ongoing interaction
+        map.on('moveend', () => {
+            spinGlobe();
+        });
+
+        spinGlobe();
+    </script>
+
+</body>
+
+</html>
