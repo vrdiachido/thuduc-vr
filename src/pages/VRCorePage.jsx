@@ -1,14 +1,22 @@
 import { useDisclosure } from '@mantine/hooks';
-import { Drawer, Button, Modal } from '@mantine/core';
+import { Drawer, Button, Modal, ActionIcon } from '@mantine/core';
+
 
 import { LuMapPinCheck } from "react-icons/lu";
 
 import MAP from '../constants/MAP'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { FaHome, FaMap, FaCog, FaInfoCircle, FaSearch, FaMicroblog, FaImage, FaMarker, FaMapMarkedAlt } from 'react-icons/fa'
+import { FaHome, FaMap, FaCog, FaInfoCircle, FaSearch, FaMicroblog, FaImage, FaMarker, FaMapMarkedAlt, FaRobot, FaQuestion, FaPhone } from 'react-icons/fa'
 
 import use3DVistaHook from "../hooks/use3DVistaHook";
+import HotspotSearch from '../components/HotspotSearch';
+import useHotspotStore from '../store/hotspot.store';
+import InfoModal from '../components/InfoModal';
+import { getHotspotById } from '../services/hotspots.service';
+import SettingsModal from '../components/SettingsModal';
+import MapModal from '../components/MapModal';
+import { HiPhone } from 'react-icons/hi';
 
 const VRCorePage = () => {
     const vrFrameRef = useRef(null);
@@ -21,22 +29,52 @@ const VRCorePage = () => {
     });
 
     useEffect(() => {
-        registerMessageHandler('hotspotClicked', (payload) => {
-            // alert('Received message from template: ' + payload);
-        }
-        );
     }, []);
     const [showNavbar, setShowNavbar] = useState(false);
     const [settingModalOpened, { open: openSettingModal, close: closeSettingModal }] = useDisclosure(false);
+
+    const { setCurrentHotspot } = useHotspotStore(state => state);
+
+    useEffect(() => {
+        (async () => {
+            getHotspotById(1).then((data) => {
+                setCurrentHotspot(data);
+            }
+
+            )
+        })();
+        const timer = setTimeout(() => {
+            setShowNavbar(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const [hotspotSearchDrawerOpened, { open: openHotspotSearchDrawer, close: closeHotspotSearchDrawer }] = useDisclosure(false);
+    const [showInfoModal, { open: openInfoModal, close: closeInfoModal }] = useDisclosure(false);
+    const [mapModalOpened, { open: openMapModal, close: closeMapModal }] = useDisclosure(false);
+
 
     const navButtons = [
         {
             id: 'home', label: 'Trang chủ', icon: FaHome, onClick: () => {
                 showMedia(MAP.root.name);
+                getHotspotById(1).then((data) => {
+                    setCurrentHotspot(data);
+                }
+                )
             }
         },
-        { id: 'info', label: 'Thông tin', icon: FaInfoCircle },
-        { id: 'map', label: 'Bản đồ', icon: FaMap },
+        {
+            id: 'info', label: 'Thông tin', icon: FaInfoCircle, onClick
+                : () => {
+                    openInfoModal()
+                }
+        },
+        {
+            id: 'map', label: 'Bản đồ', icon: FaMap, onClick: () => {
+                openMapModal()
+            }
+        },
         {
             id: 'settings', label: 'Cài đặt', icon: FaCog, onClick: () => {
                 openSettingModal()
@@ -44,21 +82,29 @@ const VRCorePage = () => {
         },
     ];
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowNavbar(true);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    const [opened, { open, close }] = useDisclosure(false);
-
 
     return (
         <div className='relative top-0 left-0 w-full h-screen '>
-            <Modal opened={settingModalOpened} onClose={closeSettingModal} title="Setting" centered>
-                SETTING
-            </Modal>
+            <SettingsModal
+                opened={settingModalOpened}
+                onClose={closeSettingModal}
+                vrHook={{
+                    sendMessage,
+                    showMedia
+                }}
+            />
+            <InfoModal
+                showMedia={showMedia}
+                opened={showInfoModal}
+                onClose={closeInfoModal}
+            />
+
+            <MapModal
+                showMedia={showMedia}
+                opened={mapModalOpened}
+                onClose={closeMapModal}
+
+            />
 
             <div className={`absolute  transition-all duration-500 ${showNavbar ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0'} top-0 left-0 right-0 h-full w-full flex z-[2] pointer-events-none`}>
                 <div className={`absolute bottom-0 left-0 right-0 mx-auto mb-4 max-w-md pointer-events-auto`}>
@@ -68,7 +114,7 @@ const VRCorePage = () => {
                                 <button
                                     key={button.id}
                                     onClick={() => {
-                                        button.onClick()
+                                        button?.onClick()
                                     }}
                                     className={`flex flex-col items-center justify-center flex-1 py-3 px-2 rounded-xl transition-all duration-300 cursor-pointer bg-gray-50 text-gray-700 bg-gray-50 hover:bg-blue-500 hover:text-white shadow-md ${showNavbar ? 'opacity-100' : 'opacity-0'}`}
                                 >
@@ -81,7 +127,7 @@ const VRCorePage = () => {
                 </div>
                 <div className=' absolute top-0 right-0 mt-4 mr-4 flex gap-2 pointer-events-auto'>
                     <div
-                        onClick={open}
+                        onClick={openHotspotSearchDrawer}
                         className='flex items-center justify-center px-4 py-2 gap-2 rounded-full bg-gray-50 hover:bg-blue-500 hover:text-white  transition-all duration-300 shadow-md cursor-pointer'>
                         <FaSearch className="text-lg" />
                         <span className="">Tìm kiếm</span>
@@ -92,6 +138,20 @@ const VRCorePage = () => {
                     </div>
                 </div>
                 <div className='absolute bottom-0 right-0 mb-4 mr-4 flex flex-col gap-2 pointer-events-auto'>
+                    <ActionIcon
+                        variant='white'
+                        size={"xl"}
+                        radius={"xl"}
+                    >
+                        <FaPhone className="text-lg" />
+                    </ActionIcon>
+                    <ActionIcon
+                        variant='white'
+                        size={"xl"}
+                        radius={"xl"}
+                    >
+                        <FaQuestion className="text-lg" />
+                    </ActionIcon>
                 </div>
             </div>
 
@@ -104,11 +164,11 @@ const VRCorePage = () => {
                     src="/vr_core/index.htm">
                 </iframe>
             </div>
-            <Drawer
-                position='right'
-                className='z-[1000]' opened={opened} onClose={close} title="Authentication">
-                {/* Drawer content */}
-            </Drawer>
+
+            <HotspotSearch
+                showMedia={showMedia}
+                opened={hotspotSearchDrawerOpened} onClose={closeHotspotSearchDrawer}
+            />
 
         </div>
     )
