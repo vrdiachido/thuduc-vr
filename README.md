@@ -48,12 +48,12 @@ cd diadiemvr/frontend
 npm install
 
 # Thiết lập biến môi trường
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 ### Biến môi trường
 
-Tạo một tệp `.env.local` trong thư mục gốc của dự án và thêm các mục sau:
+Tạo một tệp `.env` trong thư mục gốc của dự án và thêm các mục sau:
 
 ```
 VITE_SUPABASE_URL=url_supabase_của_bạn
@@ -114,7 +114,7 @@ frontend/
 │   ├── styles/         # Kiểu chung
 │   ├── App.jsx         # Thành phần ứng dụng chính
 │   └── main.jsx        # Điểm vào
-├── .env.local          # Biến môi trường
+├── .env          # Biến môi trường
 └── package.json        # Phụ thuộc và tập lệnh
 ```
 
