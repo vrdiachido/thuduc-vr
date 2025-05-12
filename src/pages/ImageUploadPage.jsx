@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import ImageUploader from '../components/ImageUploader';
 
-const CreateHotspotPage = () => {
+const ImageUploadPage = () => {
     const [uploadedImageUrl, setUploadedImageUrl] = useState('');
 
     const handleImageUploaded = (imageUrl) => {
@@ -37,4 +37,4 @@ const CreateHotspotPage = () => {
     );
 };
 
-export default CreateHotspotPage;
+export default ImageUploadPage;

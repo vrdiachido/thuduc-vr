@@ -7,7 +7,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router';
 import useAuthStore from '../store/auth.store';
 
 const data = [
-    { link: 'create-hotspot', label: 'Upload ảnh', icon: HiDocument },
+    { link: 'image-upload', label: 'Upload ảnh', icon: HiDocument },
     { link: 'lat-lon-picker', label: 'Chọn vị trí', icon: HiLocationMarker },
 
 ];
@@ -20,7 +20,7 @@ const ProtectedLayout = () => {
     if (!isAuthenticated) {
         return <Navigate to="/login" />;
     }
-    const [active, setActive] = useState(pathname.split('/')[2] || 'create-hotspot');
+    const [active, setActive] = useState(pathname.split('/')[2] || 'image-upload');
 
     const links = data.map((item) => (
         <a

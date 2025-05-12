@@ -37,7 +37,7 @@ const LoginPage = () => {
             // Update rememberMe in store before login
             storeSetRememberMe(rememberMe);
             await login(email, password);
-            navigate('/admin/create-hotspot');
+            navigate('/admin/image-upload');
         } catch (err) {
             setError(err.message || 'Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.');
         } finally {
