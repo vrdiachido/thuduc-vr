@@ -7,8 +7,8 @@ import './index.css'
 import ProtectedLayout from './layouts/ProtectedLayout';
 import MainLayout from './layouts/MainLayout';
 import LoginPage from './pages/LoginPage';
-import CreateHotSpotPage from './pages/CreateHotSpotPage';
-import LatLonPickerPage from './pages/LatLonPickerPage';
+// import CreateHotSpotPage from './pages/CreateHotSpotPage';
+// import LatLonPickerPage from './pages/LatLonPickerPage';
 
 
 createRoot(document.getElementById('root')).render(
@@ -19,10 +19,10 @@ createRoot(document.getElementById('root')).render(
           <Route index path="/" element={<VRCorePage />} />
           <Route path="/login" element={<LoginPage />} />
         </Route>
-        <Route path="admin" element={<ProtectedLayout />}>
+        {/* <Route path="admin" element={<ProtectedLayout />}>
           <Route index path="/admin/create-hotspot" element={<CreateHotSpotPage />} />
           <Route path='/admin/lat-lon-picker' element={<LatLonPickerPage />} />
-        </Route>
+        </Route> */}
       </Routes>
     </BrowserRouter>
   </MantineProvider>
