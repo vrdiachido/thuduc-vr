@@ -33,7 +33,7 @@ const VRCorePage = () => {
     const [showNavbar, setShowNavbar] = useState(false);
     const [settingModalOpened, { open: openSettingModal, close: closeSettingModal }] = useDisclosure(false);
 
-    const { setCurrentHotspot } = useHotspotStore(state => state);
+    const { currentHotspot, setCurrentHotspot } = useHotspotStore(state => state);
 
     useEffect(() => {
         (async () => {
@@ -100,6 +100,8 @@ const VRCorePage = () => {
             />
 
             <MapModal
+                setCurrentHotspot={setCurrentHotspot}
+                currentHotspot={currentHotspot}
                 showMedia={showMedia}
                 opened={mapModalOpened}
                 onClose={closeMapModal}
