@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="admin" element={<ProtectedLayout />}>
           <Route index path="/admin/create-hotspot" element={<CreateHotSpotPage />} />
           <Route path='/admin/lat-lon-picker' element={<LatLonPickerPage />} />
-        </Route>
+        </Route>3
       </Routes>
     </BrowserRouter>
   </MantineProvider>
