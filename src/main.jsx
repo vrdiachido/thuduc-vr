@@ -8,7 +8,7 @@ import ProtectedLayout from './layouts/ProtectedLayout';
 import MainLayout from './layouts/MainLayout';
 import LoginPage from './pages/LoginPage';
 import ImageUploadPage from './pages/ImageUploadPage';
-// import LatLonPickerPage from './pages/LatLonPickerPage';
+import LatLonPickerPage from './pages/LatLonPickerPage';
 
 
 createRoot(document.getElementById('root')).render(
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
         </Route>
         <Route path="admin" element={<ProtectedLayout />}>
           <Route index path="/admin/image-upload" element={<ImageUploadPage />} />
-          {/* <Route path='/admin/lat-lon-picker' element={<LatLonPickerPage />} /> */}
+          <Route path='/admin/lat-lon-picker' element={<LatLonPickerPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
