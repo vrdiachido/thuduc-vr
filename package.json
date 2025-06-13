@@ -10,14 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/carousel": "^7.17.5",
+    "@mantine/carousel": "^7.17.8",
     "@mantine/core": "^7.17.5",
     "@mantine/hooks": "^7.17.5",
     "@mantine/notifications": "^8.0.0",
     "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/vite": "^4.1.4",
     "@vercel/analytics": "^1.5.0",
-    "embla-carousel-react": "^7.1.0",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "mapbox-gl": "^3.12.0",
     "maplibre-gl": "^5.5.0",
     "react": "^19.0.0",

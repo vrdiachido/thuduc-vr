@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Slider, Switch, Button, Group, Text, Divider, Stack, CopyButton, Tooltip } from '@mantine/core';
-import { FaVolumeUp, FaVolumeMute, FaShareAlt, FaFacebook, FaTwitter, FaLink } from 'react-icons/fa';
+import { FaVolumeUp, FaVolumeMute, FaShareAlt, FaFacebook, FaTwitter, FaLink, FaTimes } from 'react-icons/fa';
 import { notifications } from '@mantine/notifications';
 
 const SettingsModal = ({ opened, onClose, vrHook }) => {
@@ -53,8 +53,34 @@ const SettingsModal = ({ opened, onClose, vrHook }) => {
     };
 
     return (
-        <Modal opened={opened} onClose={onClose} title="Cài đặt" centered size="md">
-            <Stack spacing="lg">
+        <Modal
+            opened={opened}
+            withCloseButton={false}
+            onClose={onClose}
+            centered
+            size="md"
+            classNames={{
+                content: 'glassmorphism-modal',
+                header: 'glassmorphism-modal-header',
+                title: 'text-xl font-bold text-gray-800',
+            }}
+            overlayProps={{
+                opacity: 0.55,
+                blur: 3,
+            }}
+            styles={{
+                body: { padding: '0' },
+                header: { padding: 0 },
+            }}
+        >
+
+            <div className="custom-modal-header">
+                <Text className="text-3xl font-bold text-gray-800">Cài đặt</Text>
+                <button onClick={onClose} className="modal-close-button">
+                    <FaTimes />
+                </button>
+            </div>
+            <Stack spacing="lg" className='p-4'>
                 {/* Volume Control */}
                 <div>
                     <Text weight={500} size="lg" mb={10}>Âm lượng</Text>

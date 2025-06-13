@@ -22,10 +22,19 @@ const HotspotSearchItem = ({ hotspot, onClick }) => {
             shadow="sm"
             padding="lg"
             radius="md"
-            withBorder
             mb="md"
-            className='hover:shadow-lg ease-in-out duration-150 hover:scale-[1.02] cursor-pointer'
+            className='glass-card hover:shadow-lg ease-in-out duration-200 hover:scale-[1.02] cursor-pointer'
             onClick={() => onClick(hotspot)}
+            styles={{
+                root: {
+                    backgroundColor: 'rgba(55, 55, 65, 0.75)',
+                    backdropFilter: 'blur(16px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
+                    color: '#ffffff'
+                }
+            }}
         >
             <Card.Section>
                 {hotspot.preview_image_url ? (
@@ -38,7 +47,7 @@ const HotspotSearchItem = ({ hotspot, onClick }) => {
                     <Box
                         style={{
                             height: 160,
-                            background: 'linear-gradient(45deg, #e1e1e1, #f5f5f5)',
+                            background: 'linear-gradient(45deg, #2a2a3c, #3a3a4c)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -50,30 +59,30 @@ const HotspotSearchItem = ({ hotspot, onClick }) => {
             </Card.Section>
 
             <Group position="apart" mt="md" mb="xs">
-                <Text weight={600} size="lg">{hotspot.title}</Text>
+                <Text weight={600} size="lg" className="text-white">{hotspot.title}</Text>
 
             </Group>
 
-            <Text size="sm" color="dimmed" lineClamp={3}>
+            <Text size="sm" color="rgba(255, 255, 255, 0.8)" lineClamp={3}>
                 {truncateDescription(hotspot.description)}
             </Text>
 
             <Group mt="md" spacing="xs">
-                <HiLocationMarker size={16} />
-                <Text size="sm" color="dimmed" style={{ flex: 1 }}>
+                <HiLocationMarker size={16} className="text-blue-300" />
+                <Text size="sm" color="rgba(255, 255, 255, 0.7)" style={{ flex: 1 }}>
                     {hotspot.address}
                 </Text>
             </Group>
 
             <Group position="apart" mt="md">
                 <Button
-                    variant="blue"
+                    className="glass-button"
+                    variant="filled"
                     color="blue"
                     compact
                     onClick={(e) => {
                         e.stopPropagation();
                         onClick(hotspot);
-
                     }}
                     rightSection={
                         <HiArrowRight size={16} />
@@ -83,12 +92,18 @@ const HotspotSearchItem = ({ hotspot, onClick }) => {
                 </Button>
                 {hotspot.url && (
                     <Button
+                        className="glass-button"
                         variant="outline"
-                        href={hotspot.url}
+                        color="gray"
                         onClick={(e) => {
                             e.stopPropagation();
                             // Open the URL in a new tab
                             window.open(hotspot.url, '_blank');
+                        }}
+                        styles={{
+                            root: {
+                                border: '1px solid rgba(255, 255, 255, 0.15)'
+                            }
                         }}
                     >
                         <Group spacing="xs">

@@ -98,7 +98,7 @@ const HotspotSearch = ({ opened, onClose, showMedia }) => {
             overlayProps={{ backgroundOpacity: 0.1 }}
             position='right'
             title={<>
-                <Group mb="md" className='p-4 absolute top-0 left-0 right-0 z-[2]'>
+                <Group mb="md" className='backdrop-blur-xl p-4 absolute top-0 left-0 right-0 z-[2]'>
                     <TextInput
                         placeholder="Tìm kiếm địa điểm..."
                         value={inputValue}
@@ -113,12 +113,32 @@ const HotspotSearch = ({ opened, onClose, showMedia }) => {
                         }
                         ref={inputRef}
                         autoFocus
+                        classNames={{
+                            input: 'glass',
+                            root: 'glass-card border-0'
+                        }}
                     />
                 </Group>
             </>}
             withCloseButton={false}
-            className='z-[1000]' opened={opened} onClose={onClose} >
-            <Box p="md" className='relative  h-full w-full'>
+            className='z-[1000]'
+            opened={opened}
+            onClose={onClose}
+            styles={{
+                content: {
+                    background: 'rgba(55, 55, 65, 0.75)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    borderLeft: '1px solid rgba(255, 255, 255, 0.05)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+                    color: '#ffffff'
+                },
+                header: {
+                    background: 'transparent',
+                }
+            }}
+        >
+            <Box p="md" className='relative h-full w-full'>
                 {error && (
                     <Alert color="red" title="Error" mb="md">
                         {error}

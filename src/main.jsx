@@ -17,12 +17,12 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route element={<MainLayout />}>
           <Route index path="/" element={<VRCorePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          {/* <Route path="/login" element={<LoginPage />} /> */}
         </Route>
-        <Route path="admin" element={<ProtectedLayout />}>
+        {/* <Route path="admin" element={<ProtectedLayout />}>
           <Route index path="/admin/image-upload" element={<ImageUploadPage />} />
           <Route path='/admin/lat-lon-picker' element={<LatLonPickerPage />} />
-        </Route>
+        </Route> */}
       </Routes>
     </BrowserRouter>
   </MantineProvider>

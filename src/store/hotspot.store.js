@@ -13,8 +13,8 @@ const useHotspotStore = create((set, get) => ({
   error: null,
   // Initialize/fetch all hotspots
   fetchHotspots: async () => {
-    // Don't refetch if already loading
-    if (get().loading) return;
+    // Don't refetch if already loaded and not empty
+    if (get().loading || get().allHotspots.length > 0) return get().allHotspots;
 
     try {
       set({ loading: true, error: null });
