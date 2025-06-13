@@ -12,7 +12,6 @@ import { FaHome, FaMap, FaCog, FaInfoCircle, FaSearch, FaMicroblog, FaImage, FaM
 import use3DVistaHook from "../hooks/use3DVistaHook";
 import HotspotSearch from '../components/HotspotSearch';
 import useHotspotStore from '../store/hotspot.store';
-import InfoModal from '../components/InfoModal';
 import { getHotspotById } from '../services/hotspots.service';
 import SettingsModal from '../components/SettingsModal';
 import MapModal from '../components/MapModal';
